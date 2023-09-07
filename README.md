@@ -104,7 +104,8 @@ Each module resides in its respective directory and includes a `main.tf`, `varia
 
 ## Authors
 
-- [Your Name](https://github.com/vikashkaushik01)
+- [Vikash Kaushik](https://github.com/vikashkaushik01)
 
 
+# terraform-eks
 # terraform-eks
