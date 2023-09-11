@@ -76,4 +76,37 @@ variable "node_group_name" {
 
 variable "secondary_subnet" {}
 
+variable "desired_size" {
+  type    = number
+  default = 1
+}
 
+variable "max_size" {
+  type    = number
+  default = 1
+}
+
+variable "min_size" {
+  type    = number
+  default = 1
+}
+
+variable "instance_types" {
+  description = "List of EC2 instance types for the node group"
+  type        = list(string)
+  default     = ["t2.small"]
+}
+
+
+# Define variables
+variable "kubernetes_namespace" {
+  description = "The Kubernetes namespace for the service account"
+  type        = string
+  default     = "default" # You can change the default value
+}
+
+variable "service_account_name" {
+  description = "The name of the Kubernetes service account"
+  type        = string
+  default     = "example-service-account" # You can change the default value
+}

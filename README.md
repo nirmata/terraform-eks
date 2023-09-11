@@ -1,4 +1,3 @@
-
 # Terraform EKS Cluster with Custom Secondary CIDR
 
 This repository contains Terraform modules for creating an Amazon Elastic Kubernetes Service (EKS) cluster with custom secondary CIDR blocks. You can use these modules to easily provision an EKS cluster in your AWS environment.
@@ -40,7 +39,7 @@ To use these modules, follow the steps below:
      source = "./secondary_cidr"
      cluster_name = module.cluster_creation.cluster_name
      eks_cluster_vpc_config = module.cluster_creation.eks_cluster_vpc_config
-     vpc_id = "your-vpc-id"
+     vpc_id = module.cluster_creation.testVPC
    }
    ```
 
@@ -52,7 +51,12 @@ To use these modules, follow the steps below:
    terraform init
    ```
 
-5. Apply the Terraform configuration:
+5. Go to cluster_creation module and update the `variable.tf` file accordingly.
+
+6. Go to secondary_cidr module and update the `variable.tf` file accordingly.
+   variable "vpc_id" can be kept empty
+
+7. Apply the Terraform configuration:
 
    ```bash
    terraform apply
@@ -78,7 +82,6 @@ These modules provide the following outputs:
 - `cluster_endpoint`: Endpoint URL of the EKS cluster.
 - `cluster_security_group_id`: ID of the security group associated with the EKS cluster.
 
-
 ## Module Structure
 
 This repository follows the following directory structure:
@@ -87,12 +90,12 @@ This repository follows the following directory structure:
 /
 ├── cluster_creation/
 │   ├── main.tf
-|   ├── data.tf
+│   ├── data.tf
 │   ├── provider.tf
 │   ├── variables.tf
 │   └── outputs.tf
 ├── secondary_cidr/
-│   ├── main.tf
+│   ├── eniconfig.tf
 │   ├── locals.tf
 │   ├── provider.tf
 │   ├── variables.tf
@@ -106,6 +109,6 @@ Each module resides in its respective directory and includes a `main.tf`, `varia
 
 - [Vikash Kaushik](https://github.com/vikashkaushik01)
 
+```
 
-# terraform-eks
-# terraform-eks
+Feel free to copy and paste this updated README into your GitHub repository, making sure to replace the existing README content with this new version. You can also customize it further if needed.

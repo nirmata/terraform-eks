@@ -15,12 +15,13 @@ terraform {
   }
 }
 
+
 # Configure the AWS Provider
 provider "aws" {
   region = var.region
   profile = "default"
 }
 
-# provider "kubectl" {
-#   load_config_file = false
+# provider kubectl {
+#    load_config_file = false
 # }
