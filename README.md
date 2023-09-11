@@ -70,9 +70,46 @@ To use these modules, follow the steps below:
 
 The following input variables can be customized when using the modules:
 
-- `cluster_name`: Name of the EKS cluster.
-- `eks_cluster_vpc_config`: VPC configuration for the EKS cluster.
-- `vpc_id`: ID of the VPC in which the EKS cluster will be created.
+- `region` (string): This is the region where the resources will be deployed. Default: "us-east-1"
+
+- `vpc_name` (string): Name for the AWS VPC. Default: "Test-VPC"
+
+- `vpc-cidr` (string): VPC CIDR Block. Default: "10.14.0.0/16"
+
+- `igw_name` (string): Name for the Internet Gateway. Default: "Test-IGW"
+
+- `public-subnet-1-cidr` (string): Public Subnet 1 CIDR Block. Default: "10.14.1.0/24"
+
+- `public-subnet-2-cidr` (string): Public Subnet 2 CIDR Block. Default: "10.14.2.0/24"
+
+- `private-subnet-1-cidr` (string): Private Subnet 1 CIDR Block. Default: "10.14.3.0/24"
+
+- `private-subnet-2-cidr` (string): Private Subnet 2 CIDR Block. Default: "10.14.4.0/24"
+
+- `cluster_version` (string): The EKS Cluster Version. Default: "1.27"
+
+- `cluster_name` (string): Name of the AWS EKS cluster. Default: "test-cluster"
+
+- `node_group_name` (string): Name of the AWS EKS node group. Default: "test-cluster-ng"
+
+- `secondary_subnet`: (No default value specified)
+
+- `desired_size` (number): Number of instances in the node group. Default: 1
+
+- `max_size` (number): Maximum number of instances in the node group. Default: 1
+
+- `min_size` (number): Minimum number of instances in the node group. Default: 1
+
+- `instance_types` (list of strings): List of EC2 instance types for the node group. Default: ["t2.small"]
+
+- `kubernetes_namespace` (string): The Kubernetes namespace for the service account. Default: "default"
+
+- `service_account_name` (string): The name of the Kubernetes service account. Default: "example-service-account"
+
+- `secondary_cidr_blocks` (list of strings): List of secondary CIDR blocks to associate with the VPC. Default: ["10.1.0.0/24"]
+
+- `secondary_subnets` (list of strings): List of secondary subnets to use with ENIConfig. Default: ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d"]
+
 
 ## Outputs
 
@@ -111,4 +148,3 @@ Each module resides in its respective directory and includes a `main.tf`, `varia
 
 ```
 
-Feel free to copy and paste this updated README into your GitHub repository, making sure to replace the existing README content with this new version. You can also customize it further if needed.
