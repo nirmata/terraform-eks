@@ -2,6 +2,11 @@ output "cluster_name" {
   value = aws_eks_cluster.test-cluster.name
 }
 
+output "cluster_id" {
+  value = aws_eks_cluster.test-cluster.id
+}
+
+
 output "eks_cluster_vpc_config" {
   value = aws_eks_cluster.test-cluster.vpc_config
 }

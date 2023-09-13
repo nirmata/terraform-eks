@@ -55,7 +55,7 @@ variable "private-subnet-2-cidr" {
 }
 
 variable "cluster_version" {
-    default = "1.27"
+    default = "1.25"
     description = "The EKS Cluster Version"
     type = string
 }
@@ -110,3 +110,4 @@ variable "service_account_name" {
   type        = string
   default     = "example-service-account" # You can change the default value
 }
+

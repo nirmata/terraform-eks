@@ -16,6 +16,8 @@ resource "aws_subnet" "secondary_subnet" {
   tags = {
     Name = "Pod-Subnet-${count.index + 1}"
   }
+
+  depends_on = [aws_vpc_ipv4_cidr_block_association.secondary_cidr_associations]
 }
 
 
