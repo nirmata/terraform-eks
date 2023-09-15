@@ -32,3 +32,7 @@ output "eks_oidc_issuer" {
 output "thumbprint_list" {
   value = aws_iam_openid_connect_provider.eks_oidc.thumbprint_list
 }
+
+output "kubeconfig" {
+  value = null_resource.update_kubeconfig
+}

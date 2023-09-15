@@ -17,7 +17,8 @@ resource "kubectl_manifest" "eniconfig" {
 
   depends_on = [
     aws_subnet.secondary_subnet,
-    var.cluster_endpoint 
+    var.cluster_endpoint,
+    var.kubeconfig
     ]
 }
 

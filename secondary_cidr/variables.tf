@@ -17,6 +17,7 @@ variable "secondary_subnets" {
   default     = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d"]  # Replace with the desired Availability Zones in us-east-1
 }
 
+variable "kubeconfig" {}
 
 
 variable "eks_cluster_vpc_config" {

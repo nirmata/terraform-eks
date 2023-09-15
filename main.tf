@@ -9,4 +9,5 @@ module "secondary_cidr" {
   cluster_endpoint = module.cluster_creation.cluster_endpoint 
   eks_cluster_vpc_config = module.cluster_creation.eks_cluster_vpc_config
   vpc_id = module.cluster_creation.testVPC
+  kubeconfig = module.cluster_creation.kubeconfig
 }
