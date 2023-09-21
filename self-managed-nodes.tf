@@ -1,6 +1,6 @@
 resource "aws_cloudformation_stack" "example" {
   name = var.stack_name  # Replace with your desired stack name
-  template_body = file("${path.module}/cf-template-for-node-group.yaml")
+  template_body = file("${path.module}/${var.template_path}")
   
   # Parameters if your CloudFormation template requires them
   parameters = {
@@ -18,6 +18,8 @@ resource "aws_cloudformation_stack" "example" {
     NodeVolumeSize                   = var.node_volume_size
     Subnets                          = var.subnets
     VpcId                            = var.vpc_id
+    APIServerEndpoint                = var.api_server_endpoint  # Add your API server endpoint variable
+    ClusterCA                        = var.cluster_ca  # Add your cluster CA variable
   }
 
   capabilities = ["CAPABILITY_IAM"]  # Specify capabilities if needed
@@ -31,12 +33,14 @@ resource "null_resource" "update_aws_auth" {
 
   provisioner "local-exec" {
     command = <<-EOT
+
+  
       # Get the NodeInstanceRole ARN from the AWS CloudFormation output
-      NODE_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name ${aws_cloudformation_stack.example.name} --query "Stacks[0].Outputs[?OutputKey=='NodeInstanceRole'].OutputValue"  --output text)
+      NODE_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name ${aws_cloudformation_stack.example.name} --query "Stacks[0].Outputs[?OutputKey=='NodeInstanceRole'].OutputValue"  --output text --profile ${var.aws_profile})
       echo $NODE_ROLE_ARN
 
       # Set the current context for kubectl to interact with the EKS cluster
-      "aws eks --region ${var.aws_region} update-kubeconfig --name ${var.cluster_name} --profile ${var.aws_profile}"
+      aws eks --region ${var.aws_region} update-kubeconfig --name ${var.cluster_name} --profile ${var.aws_profile}
 
       # Verify the context has been set
       kubectl config current-context
