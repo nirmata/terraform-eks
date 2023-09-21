@@ -24,7 +24,8 @@ Feel free to use your preferred shell for running Terraform commands.
 ## Usage
 
 1. Clone this repository to your local machine.
-    `git clone -b self-managed-node https://github.com/nirmata/terraform-eks.git`
+
+`git clone -b self-managed-node https://github.com/nirmata/terraform-eks.git`
 
 2. Modify the `variables.tf` file to set your AWS region, node group name, and other configuration parameters. 
 
