@@ -28,15 +28,13 @@ resource "aws_cloudformation_stack" "example" {
 resource "null_resource" "update_aws_auth" {
   depends_on = [aws_cloudformation_stack.example]
   triggers = {
-    stack_id = aws_cloudformation_stack.example.id
+    always_run = "${timestamp()}"
   }
 
   provisioner "local-exec" {
     command = <<-EOT
-
-  
       # Get the NodeInstanceRole ARN from the AWS CloudFormation output
-      NODE_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name ${aws_cloudformation_stack.example.name} --query "Stacks[0].Outputs[?OutputKey=='NodeInstanceRole'].OutputValue"  --output text --profile ${var.aws_profile})
+      NODE_ROLE_ARN=$(aws cloudformation describe-stacks --stack-name ${aws_cloudformation_stack.example.name} --query "Stacks[0].Outputs[?OutputKey=='NodeInstanceRole'].OutputValue" --output text --region ${var.aws_region} --profile ${var.aws_profile})
       echo $NODE_ROLE_ARN
 
       # Set the current context for kubectl to interact with the EKS cluster
@@ -50,22 +48,19 @@ resource "null_resource" "update_aws_auth" {
       kubectl get configmap/aws-auth -n kube-system -o jsonpath='{.data.mapUsers}' > current-mapusers.yaml
 
       # Create a new YAML snippet for the role you want to append
-      cat <<EOF > new-role.yaml
-      - groups:
-        - system:bootstrappers
-        - system:nodes
-        rolearn: $NODE_ROLE_ARN
-        username: system:node:{{EC2PrivateDNSName}}
-      EOF
+      cat <<EOF >> current-maproles.yaml
+- groups:
+  - system:bootstrappers
+  - system:nodes
+  rolearn: $NODE_ROLE_ARN
+  username: system:node:{{EC2PrivateDNSName}}
+EOF
 
-      # Combine the current mapRoles, mapUsers, and the new role YAML
-      cat current-maproles.yaml new-role.yaml > updated-maproles.yaml
-
-      # Apply the updated mapRoles configuration
-      kubectl create configmap aws-auth -n kube-system --from-file=mapRoles=updated-maproles.yaml,mapUsers=current-mapusers.yaml -o yaml --dry-run=client | kubectl replace -n kube-system -f -
+      # Apply the updated mapRoles configuration using kubectl apply
+      kubectl create configmap aws-auth -n kube-system --from-file=mapRoles=current-maproles.yaml,mapUsers=current-mapusers.yaml -o yaml --dry-run=client | kubectl replace -n kube-system -f -
 
       # Clean up temporary files
-      rm current-maproles.yaml current-mapusers.yaml new-role.yaml updated-maproles.yaml
+      rm current-maproles.yaml current-mapusers.yaml
     EOT
   }
 }
