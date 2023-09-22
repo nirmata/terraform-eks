@@ -161,11 +161,11 @@ resource "aws_route_table_association" "private-subnet-2-route-table-association
 }
 
 #Create Association with Private Route Table and private subnet 2
-resource "aws_route_table_association" "secondary-subnet-route-table-association" {
-  subnet_id      = var.secondary_subnet[0]
-  # subnet_id = concat(var.secondary_subnet)
-  route_table_id = aws_route_table.private-route-table.id
-}
+# resource "aws_route_table_association" "secondary-subnet-route-table-association" {
+#   subnet_id      = var.secondary_subnet[0]
+#   # subnet_id = concat(var.secondary_subnet)
+#   route_table_id = aws_route_table.private-route-table.id
+# }
 
 # NACL Allow all
 resource "aws_network_acl" "name" {
@@ -319,7 +319,8 @@ resource "aws_eks_cluster" "test-cluster" {
   version  = var.cluster_version
   role_arn = aws_iam_role.eks-iam-role.arn
   vpc_config {
-    subnet_ids = concat([aws_subnet.private-subnet-1.id, aws_subnet.private-subnet-2.id],var.secondary_subnet)
+    # subnet_ids = concat([aws_subnet.private-subnet-1.id, aws_subnet.private-subnet-2.id],var.secondary_subnet)
+    subnet_ids = concat([aws_subnet.private-subnet-1.id, aws_subnet.private-subnet-2.id])
   }
   depends_on = [
     aws_iam_role.eks-iam-role,
@@ -379,6 +380,8 @@ resource "aws_eks_addon" "vpc-cni" {
 resource "aws_eks_addon" "coredns" {
   addon_name   = "coredns"
   cluster_name = aws_eks_cluster.test-cluster.id
+
+  depends_on = [var.node_group]
 }
 
 
@@ -421,31 +424,9 @@ resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
   role       = aws_iam_role.workernode-role.id
 }
 
-
-resource "aws_eks_node_group" "test-cluster-ng" {
-  cluster_name    = var.cluster_name
-  node_group_name = var.node_group_name
-  node_role_arn   = aws_iam_role.workernode-role.arn
-  subnet_ids      =   var.secondary_subnet
-  instance_types  = var.instance_types
-
-  scaling_config {
-    desired_size = var.desired_size
-    max_size     = var.max_size
-    min_size     = var.min_size
-  }
-
-  depends_on = [
-    aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
-    aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy,
-    aws_eks_cluster.test-cluster
-  ]
-}
-
 resource "null_resource" "update_kubeconfig" {
   provisioner "local-exec" {
-    command = "aws eks --region ${var.region} update-kubeconfig --name ${var.cluster_name}"
+    command = "aws eks --region ${var.aws_region} update-kubeconfig --name ${var.cluster_name}"
   }
   depends_on = [aws_eks_cluster.test-cluster]
 }

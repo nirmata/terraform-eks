@@ -1,8 +1,15 @@
-variable "region" {
-  default     = "us-east-1"
-  description = "This is the region where the resources will be deployed"
+variable "aws_region" {
+  description = "AWS region"
   type        = string
+  default     = "us-east-1" # Replace with your desired region
 }
+
+variable "aws_profile" {
+  description = "AWS profile name"
+  type        = string
+  default     = "default" # Replace with your AWS profile name
+}
+
 
 
 variable "vpc_name" {
@@ -74,7 +81,7 @@ variable "node_group_name" {
   default     = "test-cluster-ng"  # Set the default node group name if needed
 }
 
-variable "secondary_subnet" {}
+# variable "secondary_subnet" {}
 
 variable "desired_size" {
   type    = number
@@ -111,3 +118,4 @@ variable "service_account_name" {
   default     = "example-service-account" # You can change the default value
 }
 
+variable "node_group" {}

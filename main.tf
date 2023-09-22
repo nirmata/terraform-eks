@@ -1,12 +1,16 @@
 module "cluster_creation" {
   source = "./cluster_creation"
-  secondary_subnet = module.secondary_cidr.secondary_subnet
+  node_group = module.self-managed-node
 }
 
-module "secondary_cidr" {
-  source = "./secondary_cidr"
+module "self-managed-node" {
+  source = "./self-managed-node/"
   cluster_name = module.cluster_creation.cluster_name
-  cluster_endpoint = module.cluster_creation.cluster_endpoint 
-  eks_cluster_vpc_config = module.cluster_creation.eks_cluster_vpc_config
-  vpc_id = module.cluster_creation.testVPC
+  aws_region = module.cluster_creation.aws_region
+  aws_profile = module.cluster_creation.aws_profile
+  cluster_security_group = module.cluster_creation.cluster_security_group
+  vpc_id = module.cluster_creation.vpc_id
+  subnets = module.cluster_creation.subnets
+  api_server_endpoint = module.cluster_creation.api_server_endpoint
+  cluster_ca  = module.cluster_creation.cluster_ca
 }
