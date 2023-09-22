@@ -26,6 +26,29 @@ resource "aws_cloudformation_stack" "example" {
   capabilities = ["CAPABILITY_IAM"]  # Specify capabilities if needed
 }
 
+
+resource "local_file" "aws-auth" {
+  filename = "${path.module}/aws-auth-configmap.yaml"
+  content = <<-EOT
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: aws-auth
+      namespace: kube-system
+    data:
+      mapRoles: |
+        - rolearn: $NODE_ROLE_ARN
+          username: system:node:{{EC2PrivateDNSName}}
+          groups:
+            - system:bootstrappers
+            - system:nodes
+      mapUsers: ""
+  EOT
+}
+
+
+
+
 resource "null_resource" "update_aws_auth" {
   depends_on = [aws_cloudformation_stack.example]
   triggers = {
@@ -43,6 +66,9 @@ resource "null_resource" "update_aws_auth" {
 
       # Verify the context has been set
       kubectl config current-context
+
+      kubectl create -f ${path.module}/aws-auth-configmap.yaml
+
 
       # Get the current mapRoles and mapUsers configuration and save it to a file
       kubectl get configmap/aws-auth -n kube-system -o jsonpath='{.data.mapRoles}' > current-maproles.yaml

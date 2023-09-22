@@ -119,3 +119,9 @@ variable "service_account_name" {
 }
 
 variable "node_group" {}
+
+variable "availability_zones" {
+  description = "List of Availability Zones for subnets"
+  type        = string
+  default     = "us-east-1a" # Replace with your desired AZs
+}
